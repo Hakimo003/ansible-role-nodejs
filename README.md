@@ -14,11 +14,11 @@ Select Linux Binaries (x64)
 None
 
 ## Example Playbook
-
+```
  - hosts: all
    roles:
-     - role: jenkins-habilitation
-
+     - role: ansible-role-nodejs
+```
 ## Licence
 
 HACH
