@@ -1,0 +1,49 @@
+## Transfert & extract JDK archives
+- name : SSH copy of NodeJS
+  unarchive :
+    src : '{{ LOCAL_REPOSITORY }}/nodejs/{{ item }}'
+    dest : '{{ TOOLS_HOME }}'
+    owner : {{ OWNER }}
+    group : {{ GROUP }}
+  with_items :
+    - "node-v{{ version_nodejs }}-linux-x64.tar.xz"
+
+
+
+## Create symbolic links
+- name : Create NodeJS symlinks
+  file :
+    src : '{{ item.src }}'
+    dest : '{{ LINKS_HOME }}/{{ item.dest }}'
+    state : link
+    owner : {{ OWNER }}
+    group : {{ GROUP }}
+  with_items :
+    - { src : '{{ TOOLS_HOME }}/node-v{{ version_nodejs }}-linux-x64'   , dest : 'nodejs-{{ version_nodejs }}' }
+    - { src : '{{ LINKS_HOME }}/nodejs-{{ version_nodejs }}'     , dest : 'nodejs' }
+
+
+
+- name : Create environment variables NodeJS
+  lineinfile :
+    state : present
+    dest : "/home/{{ OWNER }}/.bashrc"
+    regexp : '^export {{ item.name }}.*'
+    line : 'export {{ item.name }}={{ item.value }}'
+  with_items :
+    - { name : 'NODEJS_HOME',    value : '{{ LINKS_HOME }}/nodejs' }
+
+
+
+## Create symlinks to JDK executables
+- name : Create symlinks to JDK executables
+  file :
+    src : '{{ item.src }}'
+    dest : '{{ BIN_HOME }}/{{ item.dest }}'
+    state : link
+    owner : {{ OWNER }}
+    group : {{ GROUP }}
+  with_items :
+    - { src : '{{ LINKS_HOME }}/nodejs/bin/node'    , dest : 'node' }
+    - { src : '{{ LINKS_HOME }}/nodejs/bin/npm'     , dest : 'npm' }
+    - { src : '{{ LINKS_HOME }}/nodejs/bin/npx'     , dest : 'npx' }
