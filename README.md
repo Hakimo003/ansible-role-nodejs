@@ -15,9 +15,7 @@ None
 
 ## Example Playbook
 ```
- - hosts: all
-   roles:
-     - role: ansible-role-nodejs
+  ansible-playbook -i inventory.ini nodejs.yml
 ```
 ## Licence
 
